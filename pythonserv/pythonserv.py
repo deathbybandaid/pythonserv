@@ -15,6 +15,10 @@ class PythonSERVer():
         self.host = self.config["core"]["host"]
         self.port = self.config["core"]["port"]
 
+        self.name = self.config["core"]["name"]
+        self.sid = self.config["core"]["sid"]
+        self.password = self.config["core"]["password"]
+
         self.reader = None
         self.writer = None
 
@@ -22,14 +26,30 @@ class PythonSERVer():
         sc = False
         self.reader, self.writer = await asyncio.open_connection(self.host, self.port, ssl=sc)
 
+        self.writeline('SERVER', self.name, self.password, 0, self.sid, self.description, exempt_event=True)
+
+        while True:
+            line = await self.readline()
+            if not line:
+                continue
+
+    async def readline(self):
+        line = await self.reader.readline()
+        if line == b'':
+            raise RuntimeError('Disconnected')
+        line = line.decode(errors='surrogateescape').rstrip('\r\n')
+        print("recieved     " + str(line))
+        return line
+
+    def writeline(self, line, *args, **kwargs):
+        print("writing     " + str(line))
+        self.writer.write(line.encode("utf-8", errors='surrogateescape') + b'\r\n')
+
     def config_file_to_dict(self, filetoread):
-
         newdict = dict()
-
         # Read configuration
         config = configparser.ConfigParser()
         config.read(filetoread)
-
         for each_section in config.sections():
 
             if each_section not in newdict.keys():
