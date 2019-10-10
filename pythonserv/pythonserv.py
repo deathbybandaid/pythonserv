@@ -12,15 +12,15 @@ class PythonSERVer():
         self.config = self.config_file_to_dict(self.configfile)
         print(str(self.config))
 
-        self.link.host = self.config["core"]["host"]
-        self.link.port = self.config["core"]["port"]
+        self.host = self.config["core"]["host"]
+        self.port = self.config["core"]["port"]
 
         self.reader = None
         self.writer = None
 
     async def connect(self):
         sc = False
-        self.reader, self.writer = await asyncio.open_connection(self.link.host, self.link.port, ssl=sc)
+        self.reader, self.writer = await asyncio.open_connection(self.host, self.port, ssl=sc)
 
     def config_file_to_dict(self, filetoread):
 
