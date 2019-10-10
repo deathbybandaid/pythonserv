@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-from pythonserv import config_file_to_dict
+from pythonserv import pythonserver
 
 
 def main():
-    configdict = config_file_to_dict()
-    print(str(configdict))
     return
 
 

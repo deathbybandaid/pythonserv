@@ -5,7 +5,17 @@
 import configparser
 
 
-def config_file_to_dict(filetoread="/opt/pythonserv.cfg"):
+class PythonSERVer():
+    def __init__(self):
+        print("Loading Config File")
+        self.config = config_file_to_dict("/opt/pythonserv.cfg")
+        print(str(self.config))
+
+
+pythonserver = PythonSERVer()
+
+
+def config_file_to_dict(filetoread):
 
     newdict = dict()
 
