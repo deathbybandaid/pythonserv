@@ -10,7 +10,7 @@ class PythonSERVer():
         self.configfile = "/opt/pythonserv.cfg"
         print("Loading Config File")
         self.config = self.config_file_to_dict(self.configfile)
-        print(str(self.config))
+        print("config contents    " + str(self.config))
 
         self.host = self.config["core"]["host"]
         self.port = self.config["core"]["port"]
@@ -27,11 +27,15 @@ class PythonSERVer():
         self.reader, self.writer = await asyncio.open_connection(self.host, self.port, ssl=sc)
 
         self.writeline('SERVER', self.name, self.password, 0, self.sid, self.description, exempt_event=True)
+        print("connected")
 
         while True:
             line = await self.readline()
             if not line:
                 continue
+
+    def disconnect(self, reason=''):
+        print(str(reason))
 
     async def readline(self):
         line = await self.reader.readline()
