@@ -18,6 +18,7 @@ class PythonSERVer():
         self.name = self.config["core"]["name"]
         self.sid = self.config["core"]["sid"]
         self.password = self.config["core"]["password"]
+        self.description = self.config["core"]["description"]
 
         self.reader = None
         self.writer = None
