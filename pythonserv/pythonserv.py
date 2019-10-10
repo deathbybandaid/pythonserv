@@ -26,18 +26,33 @@ class PythonSERVer():
     async def connect(self):
         sc = False
         self.reader, self.writer = await asyncio.open_connection(self.host, self.port, ssl=sc)
-
-        self.writeline('PASS', self.password)
-        self.writeline('SERVER', self.name, self.password, 0, self.sid, self.description)
         print("connected")
 
+        self.server_auth()
+        print("authenticated")
+
+        print("listening")
+        self.server_listen()
+
+        testchan = "#deathbybandaid"
+        print("joining " + testchan)
+        self.server_join_channel(testchan)
+
+    def disconnect(self, reason=''):
+        print(str(reason))
+
+    async def server_listen(self):
         while True:
             line = await self.readline()
             if not line:
                 continue
 
-    def disconnect(self, reason=''):
-        print(str(reason))
+    def server_auth(self):
+        self.writeline('PASS', self.password)
+        self.writeline('SERVER', self.name, self.password, 0, self.sid, self.description)
+
+    def server_join_channel(self, channel):
+        self.writeline('JOIN', self.sid, channel)
 
     async def readline(self):
         line = await self.reader.readline()
@@ -48,31 +63,30 @@ class PythonSERVer():
         return line
 
     def writeline(self, line, *args, **kwargs):
-        if isinstance(line, str):
-            if '{}' in line:
-                line = line.format(*args, **kwargs)
-            else:
-                params = list()
-                trailing = False
-                semi_trailing = False
-                for param in args:
-                    if trailing:
+        if '{}' in line:
+            line = line.format(*args, **kwargs)
+        else:
+            params = list()
+            trailing = False
+            semi_trailing = False
+            for param in args:
+                if trailing:
+                    raise ValueError(
+                        'writeline: Parameter with space character should be used once and at the last position')
+                param = str(param)
+                if param.startswith('+') or param.startswith('-'):
+                    if semi_trailing:
                         raise ValueError(
-                            'writeline: Parameter with space character should be used once and at the last position')
-                    param = str(param)
-                    if param.startswith('+') or param.startswith('-'):
-                        if semi_trailing:
-                            raise ValueError(
-                                'writeline: Parameter starts with + or - character should be used once')
-                        semi_trailing = True
-                        params.append(param)
-                    elif (param == '') or (' ' in param):
-                        params.append(':' + param)
-                        trailing = True
-                    else:
-                        params.append(param)
-                if len(params) > 0:
-                    line = '{} {}'.format(line, ' '.join(params))
+                            'writeline: Parameter starts with + or - character should be used once')
+                    semi_trailing = True
+                    params.append(param)
+                elif (param == '') or (' ' in param):
+                    params.append(':' + param)
+                    trailing = True
+                else:
+                    params.append(param)
+            if len(params) > 0:
+                line = '{} {}'.format(line, ' '.join(params))
         if '\n' in line:
             raise ValueError('writeline: Message should not be multi-lined')
         print("writing     " + str(line))
