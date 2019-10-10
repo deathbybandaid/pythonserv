@@ -12,7 +12,7 @@ class PythonSERVer():
         self.config = self.config_file_to_dict(self.configfile)
         print(str(self.config))
 
-    def config_file_to_dict(filetoread):
+    def config_file_to_dict(self, filetoread):
 
         newdict = dict()
 
