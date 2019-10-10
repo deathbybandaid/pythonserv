@@ -32,21 +32,24 @@ class PythonSERVer():
         self.server_auth()
         print("authenticated")
 
+        Thread(target=self.server_thread).start()
+
         print("listening")
-        Thread(target=self.server_listen).start()
-
-        testchan = "#deathbybandaid"
-        print("joining " + testchan)
-        self.server_join_channel(testchan)
-
-    def disconnect(self, reason=''):
-        print(str(reason))
-
-    async def server_listen(self):
         while True:
             line = await self.readline()
             if not line:
                 continue
+            else:
+                print("recieved     " + str(line))
+
+    def disconnect(self, reason=''):
+        print(str(reason))
+
+    def server_thread(self):
+
+        testchan = "#deathbybandaid"
+        print("joining " + testchan)
+        self.server_join_channel(testchan)
 
     def server_auth(self):
         self.writeline('PASS', self.password)
@@ -60,7 +63,6 @@ class PythonSERVer():
         if line == b'':
             raise RuntimeError('Disconnected')
         line = line.decode(errors='surrogateescape').rstrip('\r\n')
-        print("recieved     " + str(line))
         return line
 
     def writeline(self, line, *args, **kwargs):
