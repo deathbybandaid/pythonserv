@@ -3,6 +3,7 @@
 
 import asyncio
 import configparser
+from threading import Thread
 
 
 class PythonSERVer():
@@ -32,7 +33,7 @@ class PythonSERVer():
         print("authenticated")
 
         print("listening")
-        self.server_listen()
+        Thread(target=self.server_listen).start()
 
         testchan = "#deathbybandaid"
         print("joining " + testchan)
@@ -41,7 +42,7 @@ class PythonSERVer():
     def disconnect(self, reason=''):
         print(str(reason))
 
-    async def server_listen(self):
+    def server_listen(self):
         while True:
             line = await self.readline()
             if not line:
