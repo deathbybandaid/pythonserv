@@ -46,10 +46,7 @@ class PythonSERVer():
         print(str(reason))
 
     def server_thread(self):
-
-        testchan = "#deathbybandaid"
-        print("joining " + testchan)
-        self.server_join_channel(testchan)
+        return
 
     def server_auth(self):
         self.writeline('PASS', self.password)
