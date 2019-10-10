@@ -42,7 +42,7 @@ class PythonSERVer():
     def disconnect(self, reason=''):
         print(str(reason))
 
-    def server_listen(self):
+    async def server_listen(self):
         while True:
             line = await self.readline()
             if not line:
