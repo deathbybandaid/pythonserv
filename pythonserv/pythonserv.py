@@ -27,7 +27,7 @@ class PythonSERVer():
         sc = False
         self.reader, self.writer = await asyncio.open_connection(self.host, self.port, ssl=sc)
 
-        self.writeline('SERVER', self.name, self.password, 0, self.sid, self.description, exempt_event=True)
+        self.writeline('SERVER', self.name, self.password, 0, self.sid, self.description)
         print("connected")
 
         while True:
